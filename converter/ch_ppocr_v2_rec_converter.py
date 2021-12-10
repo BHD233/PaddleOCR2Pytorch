@@ -89,4 +89,5 @@ if __name__ == '__main__':
 
     # save
     converter.save_pytorch_weights('ch_ptocr_v2_rec_infer.pth')
+    converter.save_onnx('ch_ptocr_v2_rec_infer.onnx', 'rec')
     print('done.')

@@ -145,8 +145,8 @@ if __name__ == '__main__':
 
     # save
     if args.dst_model_path is not None:
-        save_name = args.dst_model_path
+        save_name_torch = args.dst_model_path
     else:
-        save_name = '{}infer.pth'.format(os.path.basename(os.path.dirname(paddle_pretrained_model_path))[:-5])
-    converter.save_pytorch_weights(save_name)
+        save_name_torch = '{}infer.pth'.format(os.path.basename(os.path.dirname(paddle_pretrained_model_path))[:-5])
+    converter.save_pytorch_weights(save_name_torch)
     print('done.')

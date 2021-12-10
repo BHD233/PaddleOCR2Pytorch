@@ -88,4 +88,5 @@ if __name__ == '__main__':
 
     # save
     converter.save_pytorch_weights('ch_ptocr_mobile_v2.0_cls_infer.pth')
+    converter.save_onnx('ch_ptocr_mobile_v2.0_cls_infer.onnx', 'cls')
     print('done.')

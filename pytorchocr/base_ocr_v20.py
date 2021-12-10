@@ -82,6 +82,63 @@ class BaseOCRV20:
             torch.save(self.net.state_dict(), weights_path) # _use_new_zipfile_serialization=False for torch>=1.6.0
         print('model is saved: {}'.format(weights_path))
 
+    def save_onnx(self, path, type = 'det'):
+        print('saving model', type)
+        if type == 'det':
+            # ------------------------------ text detection
+            # Input to the model
+            x = torch.randn(1, 3, 960, 1280, requires_grad=True)
+
+            # Export the model
+            torch.onnx.export(self.net,             # model being run
+                            x,                         # model input (or a tuple for multiple inputs)
+                            path,  # where to save the model (can be a file or file-like object)
+                            export_params=True,        # store the trained parameter weights inside the model file
+                            opset_version=12,          # the ONNX version to export the model to
+                            do_constant_folding=True,  # whether to execute constant folding for optimization
+                            input_names = ['input'],   # the model's input names
+                            output_names = ['output'], # the model's output names
+                            dynamic_axes={'input' : {0 : 'batch_size', 
+                                                    2 : 'height_size', 
+                                                    3 : 'width_size'},    # variable lenght axes
+                                            'output' : {0 : 'batch_size', 
+                                                        2 : 'height_size', 
+                                                        3 : 'width_size'}})
+
+        if type == 'cls':
+            # ------------------------------- class detection
+            # Input to the model
+            x = torch.randn(1, 3, 48, 192, requires_grad=True)
+
+            # Export the model
+            torch.onnx.export(self.net,             # model being run
+                            x,                         # model input (or a tuple for multiple inputs)
+                            path,  # where to save the model (can be a file or file-like object)
+                            export_params=True,        # store the trained parameter weights inside the model file
+                            opset_version=12,          # the ONNX version to export the model to
+                            do_constant_folding=True,  # whether to execute constant folding for optimization
+                            input_names = ['input'],   # the model's input names
+                            output_names = ['output'], # the model's output names
+                            dynamic_axes={'input' : {0 : 'batch_size'},    # variable lenght axes
+                                            'output' : {0 : 'batch_size'}})
+        if type == 'rec':
+            # ------------------------------ recog
+            # Input to the model
+            x = torch.randn(1, 3, 32, 320, requires_grad=True)
+
+            # Export the model
+            torch.onnx.export(self.net.eval(),             # model being run
+                            x,                         # model input (or a tuple for multiple inputs)
+                            path,  # where to save the model (can be a file or file-like object)
+                            export_params=True,        # store the trained parameter weights inside the model file
+                            opset_version=12,          # the ONNX version to export the model to
+                            do_constant_folding=True,  # whether to execute constant folding for optimization
+                            input_names = ['input'],   # the model's input names
+                            output_names = ['output'], # the model's output names
+                            dynamic_axes={'input' : {0 : 'batch_size', 
+                                                    3 : 'width_size'},    # variable lenght axes
+                                            'output' : {0 : 'batch_size', 
+                                                        1 : 'width_size'}})
 
     def print_pytorch_state_dict(self):
         print('pytorch:')
